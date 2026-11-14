@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 11, 2026 at 07:27 PM
+-- Generation Time: Nov 14, 2026 at 05:27 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -480,18 +480,21 @@ CREATE TABLE `project` (
   `Project_Start_Date` date DEFAULT NULL,
   `Approval_Date` date DEFAULT NULL,
   `Expected_End_Date` date DEFAULT NULL,
-  `Project_Status` varchar(50) DEFAULT NULL
+  `Project_Status` varchar(50) DEFAULT NULL,
+  `Scope_Of_Work` text DEFAULT NULL,
+  `Created_By_Officer_ID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `project`
 --
 
-INSERT INTO `project` (`Project_ID`, `Project_Name`, `Ministry_ID`, `Agency_ID`, `Approved_Budget`, `Project_Start_Date`, `Approval_Date`, `Expected_End_Date`, `Project_Status`) VALUES
-(1, 'Padma Bridge Rail Link Project', 10, 6, 392468000000.00, '2016-01-01', '2015-05-03', '2024-06-30', 'Ongoing'),
-(2, 'Dhaka Mass Rapid Transit Development Project (Line-6)', 1, 1, 334720000000.00, '2013-07-01', '2012-12-18', '2026-12-31', 'Ongoing'),
-(3, 'Bangabandhu Sheikh Mujibur Rahman Tunnel(KarnafuliTunnel)', 1, 7, 10689000000.00, '2015-11-01', '2015-10-05', '2023-10-31', 'Completed'),
-(4, 'Hazrat Shahjalal International Airport Expansion Project (Third Terminal)', 1, 1, 21398000000.00, '2019-12-01', '2017-10-24', '2024-12-31', 'Ongoing');
+INSERT INTO `project` (`Project_ID`, `Project_Name`, `Ministry_ID`, `Agency_ID`, `Approved_Budget`, `Project_Start_Date`, `Approval_Date`, `Expected_End_Date`, `Project_Status`, `Scope_Of_Work`, `Created_By_Officer_ID`) VALUES
+(1, 'Padma Bridge Rail Link Project', 10, 6, 392468000000.00, '2016-01-01', '2015-05-03', '2024-06-30', 'Ongoing', NULL, NULL),
+(2, 'Dhaka Mass Rapid Transit Development Project (Line-6)', 1, 1, 334720000000.00, '2013-07-01', '2012-12-18', '2026-12-31', 'Ongoing', NULL, NULL),
+(3, 'Bangabandhu Sheikh Mujibur Rahman Tunnel(KarnafuliTunnel)', 1, 7, 10689000000.00, '2015-11-01', '2015-10-05', '2023-10-31', 'Completed', NULL, NULL),
+(4, 'Hazrat Shahjalal International Airport Expansion Project (Third Terminal)', 1, 1, 21398000000.00, '2019-12-01', '2017-10-24', '2024-12-31', 'Ongoing', NULL, NULL),
+(5, 'Dhaka-Chittagong High-Speed Rail Network Development', 2, 1, 12500.00, '2026-12-26', '2026-11-06', '2028-11-06', 'Ongoing', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -546,6 +549,35 @@ INSERT INTO `role` (`Role_ID`, `Role_Name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `system_users`
+--
+
+CREATE TABLE `system_users` (
+  `id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `role` enum('admin','project_officer','procurement_officer','reviewing_officer','contractor') NOT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` enum('Pending','Approved','Rejected') DEFAULT 'Pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `system_users`
+--
+
+INSERT INTO `system_users` (`id`, `username`, `email`, `password_hash`, `role`, `full_name`, `is_active`, `created_at`, `status`) VALUES
+(1, 'admin', 'admin@ghosttrack.com', '$2y$10$mDhLubQJy6umTtQUu82nBOxfBS0L34Xler7SWo2GGUzPC421qREFS', 'admin', 'System Administrator', 1, '2026-11-06 15:05:21', 'Approved'),
+(2, 'ministry_admin', 'ministry@ghosttrack.gov.bd', '$2y$10$d2oe3mIHeZxSMzqfPG9C5OMLMsWLrr9JLRnuml8rVGT9ixnV0Rp3.', 'project_officer', 'Abul Kalam', 1, '2026-11-06 15:26:38', 'Approved'),
+(3, 'procurement_officer', 'procurement@ghosttrack.gov.bd', '$2y$10$tT/g0Gx66HJunW8ZDJx5ve/VT33qjr5gG3DZHKuFurcJgfgr1LWpy', 'procurement_officer', 'Rafiqul Islam', 1, '2026-11-06 15:28:25', 'Approved'),
+(4, 'auditor_user', 'auditor@audit.gov.bd', '$2y$10$vJK1iRTrsFiTNjhkKVOkvuqUFsC3UnIJN0g5cEl9OmuPFw18jg0Su', 'reviewing_officer', 'Dr. Nusrat Jahan', 1, '2026-11-06 15:29:44', 'Approved'),
+(5, 'contractor_user', 'contractor@buildcorp.com', '$2y$10$3D2Eaz9O8p32v4s9ZaC8Ge.xiDHUmYC6HMO6w6H/vTNjty21JMbmK', 'contractor', 'Tanvir Hossain', 1, '2026-11-06 15:31:09', 'Pending');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tender`
 --
 
@@ -555,20 +587,26 @@ CREATE TABLE `tender` (
   `Tender_Reference` varchar(100) NOT NULL,
   `Publication_Date` date NOT NULL,
   `Submission_Deadline` date NOT NULL,
-  `Tender_Status` varchar(50) NOT NULL
+  `Tender_Status` varchar(50) NOT NULL,
+  `Work_Category` varchar(100) DEFAULT 'Civil Works',
+  `Published_By_Officer_ID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tender`
 --
 
-INSERT INTO `tender` (`Tender_ID`, `Package_ID`, `Tender_Reference`, `Publication_Date`, `Submission_Deadline`, `Tender_Status`) VALUES
-(1, 1, 'IFT-PBRLP-WD1-2016', '2016-02-15', '2016-04-30', 'Awarded'),
-(2, 2, 'IFT-PBRLP-WD2-2017', '2017-01-10', '2017-03-20', 'Awarded'),
-(3, 3, 'IFT-DMRT-CP01-2014', '2014-05-01', '2014-07-15', 'Awarded'),
-(4, 4, 'IFT-DMRT-CP03-2015', '2015-08-12', '2015-11-10', 'Awarded'),
-(5, 5, 'IFT-BKTT-PKG1-2015', '2015-12-01', '2016-02-28', 'Awarded'),
-(6, 6, 'IFT-HSIA-HAT01-2019', '2019-03-10', '2019-06-05', 'Awarded');
+INSERT INTO `tender` (`Tender_ID`, `Package_ID`, `Tender_Reference`, `Publication_Date`, `Submission_Deadline`, `Tender_Status`, `Work_Category`, `Published_By_Officer_ID`) VALUES
+(1, 1, 'IFT-PBRLP-WD1-2016', '2016-02-15', '2016-04-30', 'Awarded', 'Civil Works', NULL),
+(2, 2, 'IFT-PBRLP-WD2-2017', '2017-01-10', '2017-03-20', 'Awarded', 'Civil Works', NULL),
+(3, 3, 'IFT-DMRT-CP01-2014', '2014-05-01', '2014-07-15', 'Awarded', 'Civil Works', NULL),
+(4, 4, 'IFT-DMRT-CP03-2015', '2015-08-12', '2015-11-10', 'Awarded', 'Civil Works', NULL),
+(5, 5, 'IFT-BKTT-PKG1-2015', '2015-12-01', '2016-02-28', 'Awarded', 'Civil Works', NULL),
+(6, 6, 'IFT-HSIA-HAT01-2019', '2019-03-10', '2019-06-05', 'Awarded', 'Civil Works', NULL),
+(7, 5, 'T-REF_905', '2026-11-01', '2027-01-01', 'Open', 'Civil Works', NULL),
+(8, 2, 'T-REF_906', '2026-11-01', '2026-12-01', 'Open', 'Civil Works', NULL),
+(9, 2, 'T-REF_907', '2026-11-01', '2026-12-01', 'Open', 'Environment & Safety', NULL),
+(10, 5, 'T-REF_908', '2026-11-01', '2026-12-01', 'Open', 'Electrical', 3);
 
 -- --------------------------------------------------------
 
@@ -756,7 +794,8 @@ ALTER TABLE `procurement_package`
 ALTER TABLE `project`
   ADD PRIMARY KEY (`Project_ID`),
   ADD KEY `Ministry_ID` (`Ministry_ID`),
-  ADD KEY `Agency_ID` (`Agency_ID`);
+  ADD KEY `Agency_ID` (`Agency_ID`),
+  ADD KEY `fk_project_officer` (`Created_By_Officer_ID`);
 
 --
 -- Indexes for table `project_location`
@@ -774,11 +813,20 @@ ALTER TABLE `role`
   ADD UNIQUE KEY `Role_Name` (`Role_Name`);
 
 --
+-- Indexes for table `system_users`
+--
+ALTER TABLE `system_users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- Indexes for table `tender`
 --
 ALTER TABLE `tender`
   ADD PRIMARY KEY (`Tender_ID`),
-  ADD KEY `Package_ID` (`Package_ID`);
+  ADD KEY `Package_ID` (`Package_ID`),
+  ADD KEY `fk_tender_officer` (`Published_By_Officer_ID`);
 
 --
 -- Indexes for table `upazila`
@@ -898,7 +946,7 @@ ALTER TABLE `procurement_package`
 -- AUTO_INCREMENT for table `project`
 --
 ALTER TABLE `project`
-  MODIFY `Project_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Project_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `project_location`
@@ -913,10 +961,16 @@ ALTER TABLE `role`
   MODIFY `Role_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `system_users`
+--
+ALTER TABLE `system_users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `tender`
 --
 ALTER TABLE `tender`
-  MODIFY `Tender_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `Tender_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `upazila`
@@ -1017,6 +1071,7 @@ ALTER TABLE `procurement_package`
 -- Constraints for table `project`
 --
 ALTER TABLE `project`
+  ADD CONSTRAINT `fk_project_officer` FOREIGN KEY (`Created_By_Officer_ID`) REFERENCES `officer` (`Officer_ID`),
   ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`Ministry_ID`) REFERENCES `ministry` (`Ministry_ID`),
   ADD CONSTRAINT `project_ibfk_2` FOREIGN KEY (`Agency_ID`) REFERENCES `implementing_agency` (`Agency_ID`);
 
@@ -1031,6 +1086,7 @@ ALTER TABLE `project_location`
 -- Constraints for table `tender`
 --
 ALTER TABLE `tender`
+  ADD CONSTRAINT `fk_tender_officer` FOREIGN KEY (`Published_By_Officer_ID`) REFERENCES `officer` (`Officer_ID`),
   ADD CONSTRAINT `tender_ibfk_1` FOREIGN KEY (`Package_ID`) REFERENCES `procurement_package` (`Package_ID`);
 
 --

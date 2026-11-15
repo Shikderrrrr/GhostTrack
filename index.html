@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhostTrack — Fund Flow Monitoring</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600&family=Manrope:wght@400;600;700&family=Michroma&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="#top" class="logo-area">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span>GHOSTTRACK</span>
+        </a>
+        <div class="nav-links">
+            <a href="#overview">System Overview</a>
+            <a href="registration.php" style="color: #38bdf8; font-weight: 600;">Contractor Register</a>
+            <a href="#login" class="btn-reserve">Access Portal</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="top" class="hero-section">
+            <div class="hero-sticky">
+                <canvas id="heroCanvas"></canvas>
+                <div class="hero-bg-wrapper" id="heroBgWrapper">
+                    <img src="ghost.jpg" alt="GhostTrack 3D Scanner" class="hero-bg-layer" id="heroBg" onerror="this.src='https://placehold.co/1920x1080/0b0f18/38bdf8?text=GhostTrack+3D+Scanner'">
+                </div>
+                <div class="hero-veil-layer" id="heroVeil"></div>
+                <div class="hud-elem" style="top: 100px; left: 5vw;">SYS.VER — 4.2.0 RELATIONAL</div>
+                <div class="hud-elem" style="top: 100px; right: 5vw;" id="clockDisplay">T+ 00:00:00</div>
+                <div class="hud-elem brackets" style="bottom: 40px; left: 5vw; padding: 12px 18px;">AREA: MARE TRANQUILLITATIS · 0.67°N 23.47°E</div>
+                <div class="hud-elem" style="bottom: 40px; right: 5vw;">
+                    SCROLL TO EXPAND <span class="scroll-indicator">↓</span>
+                </div>
+                <div class="hero-content" id="heroContent">
+                    <p>Public Project Fund Flow & Discrepancy Detection</p>
+                    <h1>GHOST<span>TRACK</span></h1>
+                    <p>Advanced Relational Tracking Across Infrastructure Modules</p>
+                    <div class="hero-btns">
+                        <a href="#overview" class="btn-cyber">Explore System Data</a>
+                        <a href="#login" class="btn-cyber" style="background: rgba(56, 189, 248, 0.15);">Access Portal</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="overview" class="overview-section">
+            <div class="section-header">
+                <h2>SYSTEM OVERVIEW</h2>
+                <p style="font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.12em; color: var(--sky-blue); text-transform: uppercase;">Real-time National Mega Infrastructure Telemetry</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card brackets">
+                    <h3>MONITORED PROJECTS</h3>
+                    <div class="stat-value">125</div>
+                    <div class="stat-desc">Active ministry-level infrastructure and development projects tracked nationwide.</div>
+                </div>
+                <div class="stat-card brackets">
+                    <h3>TOTAL ALLOCATED BUDGET</h3>
+                    <div class="stat-value">12.5K <small style="font-size: 1rem; color: var(--sky-blue);">Cr BDT</small></div>
+                    <div class="stat-desc">Linked via relational procurement modules and financial tracking gateways.</div>
+                </div>
+                <div class="stat-card brackets" style="border-color: rgba(255, 51, 102, 0.4);">
+                    <h3 style="color: var(--alert-red);">ACTIVE DISCREPANCIES</h3>
+                    <div class="stat-value" style="color: var(--alert-red); text-shadow: 0 0 10px rgba(255,51,102,0.5);">03</div>
+                    <div class="stat-desc">Flagged for Reviewing Officer (IMED) action due to progress-fund mismatches.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="login" class="login-section">
+            <div class="login-card-wrapper brackets">
+                <div class="login-intro-side">
+                    <div class="ghost-img-container">
+                        <img src="ghost.jpg" alt="GhostTrack Avatar" class="ghost-3d-img" onerror="this.src='https://placehold.co/140x140/0b0f18/38bdf8?text=GhostTrack'">
+                    </div>
+                    <div class="login-brand-badge">GHOSTTRACK PORTAL</div>
+                    <h2>Public Infrastructure Fund & Discrepancy Monitoring</h2>
+                    <p>Secure authentication for authorized government officers and licensed contractors.</p>
+                    <div class="security-note">
+                        🔒 Secure Data Protection Layer
+                    </div>
+                </div>
+
+                <div class="login-form-side">
+                    <div class="login-form-header">
+                        <h2>Secure Login</h2>
+                        <p>Select your authorized role to access system modules</p>
+                    </div>
+
+                    <div class="role-tabs">
+                        <button type="button" id="tabOfficer" class="role-tab-btn active" onclick="setRole('officer')">Officer Portal</button>
+                        <button type="button" id="tabContractor" class="role-tab-btn" onclick="setRole('contractor')">Contractor Portal</button>
+                    </div>
+
+                    <form action="login.php" method="POST" onsubmit="prepareLoginRole()">
+                        <!-- Hidden Input dynamically populated before submit -->
+                        <input type="hidden" id="finalRoleInput" name="role_type" value="project_officer">
+
+                        <div id="officerSubTier" class="sub-role-container">
+                            <label class="form-label">Select Officer Type:</label>
+                            <select id="officerTypeSelect" class="cyber-select">
+                                <option value="project_officer">1.Ministry Project Officer (Ministry Entry & Budget)</option>
+                                <option value="procurement_officer">2. Procurement Officer (Tender & Bids)</option>
+                                <option value="reviewing_officer">3. Reviewing Officer / IMED (Audits & Alerts)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="userIdLabel">Official Government Email / Employee ID</label>
+                            <input type="text" id="userId" name="username" class="cyber-input" placeholder="e.g. name@imed.gov.bd" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Security Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="userPass" name="password" class="cyber-input" placeholder="••••••••••••" required>
+                                <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility()">👁️</button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-login-vibrant">AUTHENTICATE SYSTEM</button>
+                   
+                    </form>
+                    
+                </div>
+            
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>GHOSTTRACK ARCHITECTURE · PUBLIC INFRASTRUCTURE FUND FLOW MONITORING SYSTEM © 2026</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script>
+        function prepareLoginRole() {
+            const finalInput = document.getElementById('finalRoleInput');
+            const officerTab = document.getElementById('tabOfficer');
+            const selectElem = document.getElementById('officerTypeSelect');
+
+            if (officerTab && officerTab.classList.contains('active')) {
+                finalInput.value = selectElem ? selectElem.value : 'project_officer';
+            } else {
+                finalInput.value = 'contractor';
+            }
+        }
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
